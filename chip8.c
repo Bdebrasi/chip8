@@ -86,12 +86,6 @@ void (*Chip8Arithmetic[16]) =
 	cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL
 };
 
-//The interpreter increments the stack pointer, then puts the current PC on the top of the stack. The PC is then set to nnn.
-void _2NNN(){
-    sp++;
-    stack[sp] = pc;
-    pc = (opcode & 0x0FFF);
-}
 
 //Clear the display.
 void _00E0(){
@@ -108,17 +102,30 @@ void _00EE(){
     sp--;
 }
 
-void(*_00EEfp)();
+//The interpreter sets the program counter to nnn.
+void _1NNN(){
+    pc = (opcode & 0x0FFF);
+}
 
-void (*_2NNNfp)();
+//The interpreter increments the stack pointer, then puts the current PC on the top of the stack. The PC is then set to nnn.
+void _2NNN(){
+    sp++;
+    stack[sp] = pc;
+    pc = (opcode & 0x0FFF);
+}
 
 void(*_00E0fp)();
+_00E0fp = &_00E0;
 
+void(*_00EEfp)();
 _00EEfp = &_00EE;
 
+void(*_1NNNfp)();
+_1NNNfp = &_1NNN;
+
+void (*_2NNNfp)();
 _2NNNfp = &_2NNN;
 
-_00E0fp = &_00E0;
 
 chip8Table[0] = _2NNNfp;
 
