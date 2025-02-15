@@ -86,13 +86,14 @@ void (*Chip8Arithmetic[16]) =
 	cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL
 };
 
-
+//The interpreter increments the stack pointer, then puts the current PC on the top of the stack. The PC is then set to nnn.
 void _2NNN(){
     sp++;
     stack[sp] = pc;
     pc = (opcode & 0x0FFF);
 }
 
+//Clear the display.
 void _00E0(){
     for(int row = 0; row < gfx.length; row++){
         for(int col = 0; col < gfx[row].length; col++){
@@ -101,11 +102,19 @@ void _00E0(){
     }
 }
 
+//The interpreter sets the program counter to the address at the top of the stack, then subtracts 1 from the stack pointer.
+void _00EE(){
+    pc = sp;
+    sp--;
+}
 
+void(*_00EEfp)();
 
 void (*_2NNNfp)();
 
 void(*_00E0fp)();
+
+_00EEfp = &_00EE;
 
 _2NNNfp = &_2NNN;
 
