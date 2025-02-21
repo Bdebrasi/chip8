@@ -114,6 +114,43 @@ void _2NNN(){
     pc = (opcode & 0x0FFF);
 }
 
+//The interpreter compares register Vx to NN, and if they are equal, increments the program counter by 2.
+void _3xNN(){
+    int NN = opcode & 0x00FF;
+    int x = 0x0F00;
+    if(NN == V[x]){
+        pc+=2;
+    }
+}
+
+//Skip next instruction if Vx != NN.
+void _4xNN(){
+    int NN = opcode & 0x00FF;
+    int x = 0x0F00;
+    if(NN != V[x]){
+        pc+=2;
+    }
+}
+
+//Skip next instruction if Vx = Vy.
+void _5xy0(){
+    int x = opcode & 0x0F00;
+    int y = opcode & 0x00F0;
+    if(V[x] == V[y]){
+        pc+=2;
+    }
+}
+
+//Set Vx = NN. 
+void _6xNN(){
+    int x = opcode & 0x0F00;
+    int NN = opcode & 0x00FF;
+    V[x] = NN;
+
+}
+
+//To do - make seperate functions to extract bits from opcode. Will be user to test/debug.
+
 void(*_00E0fp)();
 _00E0fp = &_00E0;
 
@@ -126,9 +163,19 @@ _1NNNfp = &_1NNN;
 void (*_2NNNfp)();
 _2NNNfp = &_2NNN;
 
+void (*_3xNNfp)();
+_3xNNfp = &_3xNN;
+
+void (*_4xNNfp)();
+_4xNNfp = &_4xNN;
+
+void (*_5xy0fp)();
+_5xy0fp = &_5xy0;
+
+void (*_6xNNfp)();
+_6xNNfp = &_6xNN;
 
 chip8Table[0] = _2NNNfp;
-
 
 void chip8::initialize()
 {
