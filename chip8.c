@@ -87,6 +87,29 @@ void (*Chip8Arithmetic[16]) =
 };
 
 
+
+//To do - make seperate functions to extract bits from opcode. Will be easier to test/debug.
+
+int getFirstHexDigit(int op){
+    return op & 0xF000;
+}
+
+int getX(int op){
+    return op & 0x0F00;
+}
+
+int getY(int op){
+    return op & 0x00F0;
+}
+
+int getNN(int op){
+    return op & 0x00FF;
+}
+
+int getLastHexDigit(int op){
+    return op & 0x000F;
+}
+
 //Clear the display.
 void _00E0(){
     for(int row = 0; row < gfx.length; row++){
@@ -116,8 +139,8 @@ void _2NNN(){
 
 //The interpreter compares register Vx to NN, and if they are equal, increments the program counter by 2.
 void _3xNN(){
-    int NN = opcode & 0x00FF;
-    int x = 0x0F00;
+    int NN = getNN(opcode);
+    int x = getX(opcode);
     if(NN == V[x]){
         pc+=2;
     }
@@ -125,8 +148,8 @@ void _3xNN(){
 
 //Skip next instruction if Vx != NN.
 void _4xNN(){
-    int NN = opcode & 0x00FF;
-    int x = 0x0F00;
+    int NN = getNN(opcode);
+    int x = getX(opcode);
     if(NN != V[x]){
         pc+=2;
     }
@@ -134,8 +157,8 @@ void _4xNN(){
 
 //Skip next instruction if Vx = Vy.
 void _5xy0(){
-    int x = opcode & 0x0F00;
-    int y = opcode & 0x00F0;
+    int x = getX(opcode);
+    int y = getY(opcode)
     if(V[x] == V[y]){
         pc+=2;
     }
@@ -143,13 +166,20 @@ void _5xy0(){
 
 //Set Vx = NN. 
 void _6xNN(){
-    int x = opcode & 0x0F00;
-    int NN = opcode & 0x00FF;
+    int NN = getNN(opcode);
+    int x = getX(opcode);
     V[x] = NN;
 
 }
 
-//To do - make seperate functions to extract bits from opcode. Will be user to test/debug.
+
+//Set Vx = Vx + NN.
+void _7xNN(){
+    int NN = getNN(opcode);
+    int x = getX(opcode);
+    V[x] += NN;
+}
+
 
 void(*_00E0fp)();
 _00E0fp = &_00E0;
@@ -174,6 +204,9 @@ _5xy0fp = &_5xy0;
 
 void (*_6xNNfp)();
 _6xNNfp = &_6xNN;
+
+void (*_7xNNfp)();
+_7xNNfp= &_7xNNfp;
 
 chip8Table[0] = _2NNNfp;
 
