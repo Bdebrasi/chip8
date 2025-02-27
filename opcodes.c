@@ -1,3 +1,8 @@
+#include <time.h>
+#include <stdlib.h>
+
+srand(time(NULL));
+
 void (*Chip8Table[17]) = 
 {
 	cpuNULL      , cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL, 
@@ -35,12 +40,15 @@ int getLastHexDigit(int op){
     return op & 0x000F;
 }
 
+int getNNN(int op){
+    return op & 0x0FFF;
+}
+
 //Clear the display.
 void _00E0(){
-    for(int row = 0; row < gfx.length; row++){
-        for(int col = 0; col < gfx[row].length; col++){
-            gfx[row][col] = 0;           
-        }
+    int length = 64 * 32;
+    for (int i = 0; i < length; i++){
+        gfx[i] = 0;
     }
 }
 
@@ -174,7 +182,70 @@ void _8xy7(){
     V[x] = V[y] - V[x]
 }
 
+//Set Vx = Vx SHL 1.
+void _8xyE(){
+    int x = getX(opcode);
+    int val = V[x];
+    if(val & 0x1000){
+        V[0x000F] = 1;
+    }
+    V[x] = val << 1;
+}
+
+//Skip next instruction if Vx != Vy.
+void _9xy0(){
+    int x = getX(opcode);
+    int y = getY(opcode);
+    if (V[x] != V[y]){
+        pc+=2
+    }
+}
+
+//Set I = nnn.
+void _ANNN(){
+    I = getNNN(opcode); 
+}
+
+//Jump to location nnn + V0.
+void _BNNN(){
+    int NNN = getNNN(opcode);
+    pc = NNN + V[0];
+}
+
+//Set Vx = random byte AND kk. T
+void _CxNN(){
+    int NN = getNN(opcode);
+    int randomNumber = rand() % 255;
+    int x = getX(opcode);
+    V[x] = randomNumber & NN
+}
+
+//Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision. 
+void _DxyN(){
+    int N = getN(opcode);
+    int x = getX(opcode);
+    int y = getY(opcode);
+    int pixel;
+
+    for (int colOffset = 0; col < N; colOffset++){
+        pixel = memory[I+colOffset];
+        for (int rowOffset = 0; row < 8; rowOffset++){
+            if (pixel & (0x80>>rowOffset) == 1){
+                if(gfx[(x + rowOffset + ((y + colOffset) * 64))] == 1){
+                    V[0xF] = 1;
+                }
+                gfx[x + rowOffset + ((y + colOffset) * 64)] ^= 1;
+            }
+        }
+    }
+
+    drawFlag = True;
+    pc+=2;
+
+}
+
 //Do the other V[x] opcodes only store the first few bits? Do I need to explicitly set V[F] = 0 if no carry?
+//Don't have access to V registers, pc, gfx etc. since this is now different file. Fix later.
 
 void(*_00E0fp)();
 _00E0fp = &_00E0;
@@ -226,5 +297,23 @@ _8xy6fp = &_8xy6;
 
 void (*_8xy7fp)();
 _8xy7fp = &_8xy7;
+
+void (*_8xyEfp)();
+_8xyEfp = &_8xyE;
+
+void (*_9xy0fp)();
+_9xy0fp = &_9xy0;
+
+void (*_ANNNfp)();
+_ANNNfp = &_ANNN;
+
+void(*_BNNNfp)();
+_BNNNfp = &_BNNN;
+
+void(*_CxNNfp)();
+_CxNNfp = &_CxNN;
+
+void(*_DxyNfp)();
+_DxyNfp = &_DxyN;
 
 chip8Table[0] = _2NNNfp;
