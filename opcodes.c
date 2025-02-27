@@ -163,6 +163,19 @@ void _8xy6(){
     V[x] = V[x] >> 1;
 }
 
+//8xy7 - SUBN Vx, Vy
+//Set Vx = Vy - Vx, set VF = NOT borrow.
+void _8xy7(){
+    int x = getX(opcode);
+    int y = getY(opcode);
+    if(V[y] > V[x]){
+        V[0x000F] = 1;
+    }
+    V[x] = V[y] - V[x]
+}
+
+//Do the other V[x] opcodes only store the first few bits? Do I need to explicitly set V[F] = 0 if no carry?
+
 void(*_00E0fp)();
 _00E0fp = &_00E0;
 
@@ -210,5 +223,8 @@ _8xy5fp = &_8xy5;
 
 void (*_8xy6fp)();
 _8xy6fp = &_8xy6;
+
+void (*_8xy7fp)();
+_8xy7fp = &_8xy7;
 
 chip8Table[0] = _2NNNfp;
