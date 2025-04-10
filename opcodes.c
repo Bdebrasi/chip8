@@ -336,7 +336,7 @@ _DxyNfp = &_DxyN;
 void(*_Ex9Efp)();
 _Ex9Efp = &_Ex9E;
 
-vodi(*_ExA1fp)();
+void(*_ExA1fp)();
 _ExA1fp = &_ExA1;
 
 chip8Table[0] = _2NNNfp;
