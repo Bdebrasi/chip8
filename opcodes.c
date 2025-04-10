@@ -253,6 +253,14 @@ void _Ex9E(){
     }
 }
 
+//figure out how to get key later
+void _ExA1(){
+    int x = getX(opcode);
+    if (key != V[x]){
+        pc+=2;
+    }
+}
+
 //Do the other V[x] opcodes only store the first few bits? Do I need to explicitly set V[F] = 0 if no carry?
 //Don't have access to V registers, pc, gfx etc. since this is now different file. Fix later.
 
@@ -327,5 +335,8 @@ _DxyNfp = &_DxyN;
 
 void(*_Ex9Efp)();
 _Ex9Efp = &_Ex9E;
+
+vodi(*_ExA1fp)();
+_ExA1fp = &_ExA1;
 
 chip8Table[0] = _2NNNfp;
