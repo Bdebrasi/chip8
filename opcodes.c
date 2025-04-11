@@ -261,6 +261,12 @@ void _ExA1(){
     }
 }
 
+//Need delay_timer and opcode from 
+void _FX07(){
+    int x = getX(opcode);
+    V[x] = delay_timer;
+}
+
 //Do the other V[x] opcodes only store the first few bits? Do I need to explicitly set V[F] = 0 if no carry?
 //Don't have access to V registers, pc, gfx etc. since this is now different file. Fix later.
 
@@ -338,5 +344,8 @@ _Ex9Efp = &_Ex9E;
 
 void(*_ExA1fp)();
 _ExA1fp = &_ExA1;
+
+void(*_FX07fp)();
+_FX07fp = &_FX07;
 
 chip8Table[0] = _2NNNfp;

@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-#include <stdio.h>
-#include <stdio.h>
 #include "chip8.h"
 
 chip8 myChip8;
