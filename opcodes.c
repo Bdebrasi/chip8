@@ -16,10 +16,6 @@ void (*Chip8Arithmetic[16]) =
 	cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL, cpuNULL
 };
 
-
-
-//To do - make seperate functions to extract bits from opcode. Will be easier to test/debug.
-
 int getFirstHexDigit(int op){
     return op & 0xF000;
 }
