@@ -263,6 +263,12 @@ void _FX07(){
     V[x] = delay_timer;
 }
 
+//Needs getKey()
+void _FX0A(){
+    int x = getX(opcode);
+    V[x] = getKey();
+}
+
 //Do the other V[x] opcodes only store the first few bits? Do I need to explicitly set V[F] = 0 if no carry?
 //Don't have access to V registers, pc, gfx etc. since this is now different file. Fix later.
 
@@ -343,5 +349,8 @@ _ExA1fp = &_ExA1;
 
 void(*_FX07fp)();
 _FX07fp = &_FX07;
+
+void(*_FX0Afp)();
+_FX0Afp = &_FX0A;
 
 chip8Table[0] = _2NNNfp;
