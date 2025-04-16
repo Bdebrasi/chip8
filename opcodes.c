@@ -258,15 +258,34 @@ void _ExA1(){
 }
 
 //Need delay_timer and opcode from 
-void _FX07(){
+void _Fx07(){
     int x = getX(opcode);
     V[x] = delay_timer;
 }
 
 //Needs getKey()
-void _FX0A(){
+void _Fx0A(){
     int x = getX(opcode);
     V[x] = getKey();
+}
+
+void _Fx15(){
+    int x = getX(opcode);
+    delay_timer = V[x];
+}
+
+void _Fx18(){
+    int x = getX(opcode);
+    sound_timer = V[x];
+}
+
+void _Fx1E(){
+    int x = getX(opcode);
+    i += V[x];
+}
+
+void _Fx29(){
+    
 }
 
 //Do the other V[x] opcodes only store the first few bits? Do I need to explicitly set V[F] = 0 if no carry?
@@ -347,10 +366,21 @@ _Ex9Efp = &_Ex9E;
 void(*_ExA1fp)();
 _ExA1fp = &_ExA1;
 
-void(*_FX07fp)();
-_FX07fp = &_FX07;
+void(*_Fx07fp)();
+_Fx07fp = &_Fx07;
 
-void(*_FX0Afp)();
-_FX0Afp = &_FX0A;
+void(*_Fx0Afp)();
+_Fx0Afp = &_Fx0A;
+
+void(*_FX15)();
+_Fx15fp = &_Fx15;
+
+void(*_Fx18)();
+_Fx18fp = &_Fx18;
+
+void(*_Fx1E)();
+_Fx1Efp = &_Fx1E;
+
+
 
 chip8Table[0] = _2NNNfp;
