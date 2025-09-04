@@ -285,7 +285,10 @@ void _Fx1E(){
 }
 
 void _Fx29(){
-    
+    int x = getX(opcode);
+    //one resource says *5 for initial part of memory
+    //may need to access fontset instead
+    i = V[x] * 5;
 }
 
 //Do the other V[x] opcodes only store the first few bits? Do I need to explicitly set V[F] = 0 if no carry?
@@ -381,6 +384,7 @@ _Fx18fp = &_Fx18;
 void(*_Fx1E)();
 _Fx1Efp = &_Fx1E;
 
-
+void(*_Fx29)();
+_Fx29fp = &_Fx29;
 
 chip8Table[0] = _2NNNfp;
