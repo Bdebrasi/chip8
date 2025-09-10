@@ -291,6 +291,22 @@ void _Fx29(){
     i = V[x] * 5;
 }
 
+void _Fx33(){
+    int x = getX(opcode);
+    int val = V[x];
+
+    //get hundreth, tens and ones digits
+    ones = val % 2;
+    val = val / 2;
+    tens = val % 2;
+    val = val / 2;
+    hundreds = val % 2;
+
+    i = hundreds;
+    i + 1 = tens;
+    i + 2 = ones;
+}
+
 //Do the other V[x] opcodes only store the first few bits? Do I need to explicitly set V[F] = 0 if no carry?
 //Don't have access to V registers, pc, gfx etc. since this is now different file. Fix later.
 
@@ -386,5 +402,8 @@ _Fx1Efp = &_Fx1E;
 
 void(*_Fx29)();
 _Fx29fp = &_Fx29;
+
+void (*_Fx33)();
+_Fx33fp = &_Fx33;
 
 chip8Table[0] = _2NNNfp;
